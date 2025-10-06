@@ -1,0 +1,26 @@
+##################################################################
+# iOS Config
+# Gunakan ENVIRONMENT=staging atau production sesuai kebutuhan
+##################################################################
+
+PLATFORM_NAME=iOS
+DEVICE_NAME=iPhone_14_Simulator
+PLATFORM_VERSION=17.2
+AUTOMATION_NAME=XCUITest
+
+# Path ke aplikasi .app (iOS)
+APP_PATH=./app/iOSDemo.app
+
+# Tentukan environment (staging / production)
+ENVIRONMENT=production
+
+# Behavior test
+NO_RESET=false
+CUCUMBER_TIMEOUT=90000
+TAG_ARGS=@Regression
+FEATURE=./features/payments/payments.feature
+
+# Logging
+LOG_LEVEL=debug
+RUNNER=local
+PORT=4725
