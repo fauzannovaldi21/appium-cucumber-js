@@ -33,7 +33,7 @@ class WdioBaseConfig {
         {
           outputDir: allureService.resultsDir,
           disableWebdriverStepsReporting: true,
-          disableWebdriverScreenshotsReporting: false,
+          disableWebdriverScreenshotsReporting: true,
           useCucumberStepReporter: true,
         },
       ],
