@@ -1,33 +1,34 @@
+import fs from 'fs'
+import path from 'path'
+import { exec } from 'child_process'
 import allure from '@wdio/allure-reporter';
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
 
 class AllureService {
   constructor() {
-    // Folder tetap, tidak pakai timestamp
-    this.baseDir = path.resolve('./logs');
-    this.resultsDir = path.join(this.baseDir, 'allure-results');
-    this.reportDir = path.join(this.baseDir, 'allure-report');
-    this.envFilePath = path.join(this.resultsDir, 'environment.properties');
+    if (!process.env.RUN_DIR) {
+      const fallback = path.resolve('./logs/run_default')
+      console.warn(`⚠️ RUN_DIR belum di-set, fallback ke ${fallback}`)
+      process.env.RUN_DIR = fallback
+    }
 
-    fs.mkdirSync(this.resultsDir, { recursive: true });
+    this.runDir = path.resolve(process.env.RUN_DIR)
+    this.resultsDir = path.join(this.runDir, 'allure-results')
+    this.reportDir = path.join(this.runDir, 'allure-report')
+    this.envFilePath = path.join(this.resultsDir, 'environment.properties')
+
+    fs.mkdirSync(this.resultsDir, { recursive: true })
+    console.log(`📁 Allure results folder: ${this.resultsDir}`)
   }
 
-  async attachScreenshot(step) {
-    const shouldCapture = String(process.env.SCREENSHOT_ALLURE).toLowerCase() === 'true';
-    if (!shouldCapture || typeof driver === 'undefined' || !driver) return;
-    try {
-      const image = await driver.takeScreenshot();
-      allure.addAttachment(
-        `📸 Step: ${step?.pickleStep?.text || 'unknown'}`,
-        Buffer.from(image, 'base64'),
-        'image/png'
-      );
-      console.log(`📸 Screenshot attached for step: ${step?.pickleStep?.text}`);
-    } catch (err) {
-      console.warn(`⚠️ Failed to capture screenshot: ${err.message}`);
-    }
+  attachMetadata() {
+    const envProps = [
+      `Platform=${process.env.PLATFORM_NAME || ''}`,
+      `DeviceName=${process.env.DEVICE_NAME || ''}`,
+      `App=${process.env.APP || ''}`,
+      `Reset=${process.env.RESET || ''}`,
+    ]
+    fs.writeFileSync(this.envFilePath, envProps.join('\n'))
+    console.log(`🧾 Allure metadata saved at ${this.envFilePath}`)
   }
 
   async startRecording() {
@@ -57,41 +58,27 @@ class AllureService {
     }
   }
 
-  attachMetadata() {
+  async attachScreenshot(step) {
+    const shouldCapture = String(process.env.SCREENSHOT_ALLURE).toLowerCase() === 'true';
+    if (!shouldCapture || typeof driver === 'undefined' || !driver) return;
     try {
-      const metadata = {
-        Platform: process.env.PLATFORM_NAME || 'unknown',
-        Environment: process.env.ENV || 'unknown',
-        Device: process.env.DEVICE_NAME || 'unknown',
-        App: process.env.APP || 'unknown',
-        FreshInstall: process.env.FRESHINSTALL || 'false',
-        RecordAllure: process.env.RECORD_ALLURE || 'false',
-        ScreenshotAllure: process.env.SCREENSHOT_ALLURE || 'false',
-      };
-
-      const envData = Object.entries(metadata)
-        .map(([k, v]) => `${k}=${v}`)
-        .join('\n');
-
-      fs.mkdirSync(this.resultsDir, { recursive: true });
-      fs.writeFileSync(this.envFilePath, envData);
-
-      for (const [k, v] of Object.entries(metadata)) {
-        allure.addLabel(k.toLowerCase(), String(v));
-      }
-
-      console.log(`🧾 Allure metadata saved at ${this.envFilePath}`);
+      const image = await driver.takeScreenshot();
+      allure.addAttachment(
+        `📸 Step: ${step?.pickleStep?.text || 'unknown'}`,
+        Buffer.from(image, 'base64'),
+        'image/png'
+      );
+      console.log(`📸 Screenshot attached for step: ${step?.pickleStep?.text}`);
     } catch (err) {
-      console.warn(`⚠️ Failed to attach metadata: ${err.message}`);
+      console.warn(`⚠️ Failed to capture screenshot: ${err.message}`);
     }
   }
 
   async generateReport() {
-    console.log(`🧩 Generating Allure report for ${this.resultsDir}...`);
-
+    console.log(`🧩 Generating Allure report for ${this.resultsDir}...`)
     if (!fs.existsSync(this.resultsDir)) {
-      console.error(`❌ No allure-results found in ${this.resultsDir}`);
-      return;
+      console.error(`❌ No allure-results found in ${this.resultsDir}`)
+      return
     }
 
     return new Promise((resolve, reject) => {
@@ -99,17 +86,17 @@ class AllureService {
         `npx allure generate ${this.resultsDir} --clean -o ${this.reportDir}`,
         (error, stdout) => {
           if (error) {
-            console.error(`❌ Failed to generate Allure report: ${error.message}`);
-            reject(error);
-            return;
+            console.error(`❌ Failed to generate Allure report: ${error.message}`)
+            reject(error)
+            return
           }
-          console.log(stdout);
-          console.log(`✅ Allure report generated at ${this.reportDir}`);
-          resolve();
+          console.log(stdout)
+          console.log(`✅ Allure report generated at ${this.reportDir}`)
+          resolve()
         }
-      );
-    });
+      )
+    })
   }
 }
 
-export default AllureService;
+export default AllureService

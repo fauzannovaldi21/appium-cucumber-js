@@ -66,6 +66,11 @@ export default [
 
       /* 🔹 Prettier Compatibility */
       ...prettier.rules,
+      "indent": ["error", 2],
+      "space-before-function-paren": ["error", "never"],
+      "keyword-spacing": ["error", { "before": true, "after": true }],
+      "space-infix-ops": "error",
+      "comma-spacing": ["error", { "before": false, "after": true }]
     },
   },
 ];
