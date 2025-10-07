@@ -4,7 +4,9 @@
   "main": "runner/wdio.runner.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "wdio-runner": "node ./runner/wdio.runner.js --config android"
+    "wdio-runner": "node ./runner/wdio.runner.js --config android",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "type": "module",
   "keywords": [],
@@ -12,6 +14,10 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.37.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
     "@wdio/allure-reporter": "^9.20.0",
     "@wdio/appium-service": "^9.20.0",
     "@wdio/cli": "^9.20.0",
@@ -23,7 +29,13 @@
     "appium": "^2.19.0",
     "appium-uiautomator2-driver": "^4.2.9",
     "chai": "^6.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-wdio": "^8.37.0",
     "globals": "^16.4.0",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "typescript-eslint": "^8.46.0"
   }
 }

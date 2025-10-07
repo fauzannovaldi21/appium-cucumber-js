@@ -1,18 +1,18 @@
-import { Given, When } from "@wdio/cucumber-framework";
-import dashboardPage from "../pageObjects/dashboard.page";
-import allure from '@wdio/allure-reporter';
+import { Given, When, Then } from '@wdio/cucumber-framework';
+import dashboardPage from '../pageObjects/dashboard.page.js';
 
-Given(/^I am on (.*) api-demos page$/, async(menu) => {
-  await dashboardPage.isOnPage(menu);
+Given(/^I verify all menu in dashboard$/, async () => {
+    await dashboardPage.verifyAllDashboardMenusExist();
 });
 
-When(/^I open menu (.*) from dashboard$/, async(menu) => {
-  await dashboardPage.openMenu(menu);
+When(/^I open each menu in dashboard$/, async () => {
+    await dashboardPage.openAllDashboardMenus();
 });
 
-Given('I open the app', async() => {
-  allure.addFeature('Smoke Test');
-  allure.addSeverity('normal');
-  allure.addDescription('Just a test to validate Allure reporting');
-  await driver.pause(1000);
+When(/^I open menu (.*) in dashboard$/, async (menu) => {
+    await dashboardPage.openMenu(menu);
+});
+
+Then(/^I verify sub-menu in menu (.*)$/, async (menu) => {
+    await dashboardPage.verifySubMenu(menu);
 });
