@@ -1,24 +1,30 @@
-// import { expect } from 'chai'
+import dashboardPage from '../../dashboard/pageObjects/dashboard.page.js';
 
-// export default new class dashboard {
-//     async isOnPage(page) {
-//         let headerText = ''
-//         switch (page) {
-//             case 'dashboard':
-//                 const element = await this.menuItem('API Demos')
-//                 headerText = await element.getText()
-//                 expect(headerText).to.equal('API Demos')
-//                 break;
-//             default:
-//                 break;
-//         }
-//     }
+export default new class viewPage {
+    async checkVisibility(subMenu, scrollTimeout = 30000) {
+        const element = await dashboardPage.subMenuItem(subMenu);
 
-//     async menuItem(item) {
-//         return driver.isAndroid ? $(`//android.widget.TextView[@text="${item}"]`) : $("~");
-//     }    
+        let found = await element.isDisplayed();
+        const currentTime = Date.now();
+        const screenSize = await driver.getWindowSize();
+        const midPointX = Math.round(screenSize.width * 0.5);
+        const startPointY = Math.round(screenSize.height * 0.75);
+        const endPointY = startPointY - (screenSize.height * 0.20);
 
-//     get headerDashboard() {
-//         return driver.isAndroid ? $('//android.widget.TextView[@text="API Demos"]') : $("~");
-//     }
-// }
+        while (found === false && Date.now() <= currentTime + scrollTimeout) {
+            await driver.action('pointer', { parameters: { pointerType: 'touch' } })
+                .move({ x: midPointX, y: startPointY })
+                .down({ button: 0 })
+                .move({ x: midPointX, y: endPointY, duration: 1000 })
+                .up({ button: 0 })
+                .perform();
+            found = await element.isDisplayed();
+        }
+        if (found === true) {
+            await element.waitForDisplayed({ timeout: 4000 });
+            await element.click();
+        } else {
+            throw new Error(`Element "${await element.selector}" wasn't found after scrolling in ${scrollTimeout} ms.`);
+        }
+    }
+}();

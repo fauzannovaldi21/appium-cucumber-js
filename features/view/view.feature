@@ -1,11 +1,5 @@
-# Feature: Dashboard API Demos
+Feature: Verify view
 
-#     Scenario: As a User, I can verify list of menu in dashboard page
-#         Given I am on dashboard api-demos page
-
-#     # Scenario: As a User, I can verify list of menu in dashboard page number 2
-#     #     Given I am on dashboard api-demos page
-
-
-    
-
+    Scenario: As a User, I can verify menu Views
+    Given I open menu Views in dashboard
+    When I open sub-menu Visibility

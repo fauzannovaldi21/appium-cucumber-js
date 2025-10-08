@@ -1,8 +1,6 @@
-// import { Given, When } from "@wdio/cucumber-framework";
-// import dashboardPage from "../pageObjects/view.page";
+import { When } from '@wdio/cucumber-framework';
+import viewPage from '../pageObjects/view.page.js';
 
-// Given(/^I am on (.*) api-demos page$/, async (menu) => {
-//     await dashboardPage.isOnPage(menu);
-// })
-
-// // When(/^$/)
+When(/^I open sub-menu (.*)$/, async (subMenu) => {
+    await viewPage.checkVisibility(subMenu);
+});
