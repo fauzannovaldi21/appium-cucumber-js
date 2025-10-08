@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 import AllureService from './services/allureService.js';
 
 const log = wdioLogger('wdio.runner');
+
 const envFile = `./config/.${process.env.npm_config_config || 'android'}.conf.info`;
 dotenv.config({ path: envFile });
 

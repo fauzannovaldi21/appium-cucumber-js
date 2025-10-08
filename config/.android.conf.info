@@ -5,10 +5,10 @@ PLATFORM_VERSION=15
 DEVICE_NAME=RR8X203SH9J
 AUTOMATION_NAME=UiAutomator2
 
-APP=./apps/ApiDemos-debug.apk
+APP=./apps/wikipedia.apk
 
-FEATURE_DIR=view
-FEATURE_FILE=view
+FEATURE_DIR=wikipedia
+FEATURE_FILE=search
 
 WAIT_FOR_TIMEOUT=30000
 CUCUMBER_TIMEOUT=120000
@@ -17,7 +17,8 @@ RESET=false
 AUTO_ACCEPT=true
 
 FRESHINSTALL=false
-APP_PACKAGE=io.appium.android.apis
+APP_PACKAGE=org.wikipedia
+APP_ACTIVITY=org.wikipedia.main.MainActivity
 
 SCREENSHOT_ALLURE=true
 RECORD_ALLURE=true
